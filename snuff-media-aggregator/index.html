@@ -16,48 +16,130 @@
     </header>
 
     <main class="container">
-        <section class="search-section">
-            <div class="search-container">
-                <input type="text" id="searchInput" placeholder="Search resources...">
-                <button id="searchButton"><i class="fas fa-search"></i></button>
+        <!-- Tab Navigation -->
+        <div class="tabs-container">
+            <div class="tabs">
+                <button class="tab-btn active" data-tab="resources-tab">My Resources</button>
+                <button class="tab-btn" data-tab="search-tab">Snuff Search</button>
             </div>
-            <div class="filter-container">
-                <button class="filter-btn active" data-filter="all">All</button>
-                <button class="filter-btn" data-filter="forums">Forums</button>
-                <button class="filter-btn" data-filter="youtube">YouTube</button>
-                <button class="filter-btn" data-filter="stores">Stores</button>
-                <button class="filter-btn" data-filter="manufacturers">Manufacturers</button>
-                <button class="filter-btn" data-filter="info">Information</button>
-            </div>
-        </section>
+            
+            <!-- Resources Tab Content -->
+            <div class="tab-content active" id="resources-tab">
+                <section class="search-section">
+                    <div class="search-container">
+                        <input type="text" id="searchInput" placeholder="Search my resources...">
+                        <button id="searchButton"><i class="fas fa-search"></i></button>
+                        <button id="clearResourcesButton" class="clear-btn"><i class="fas fa-times"></i></button>
+                    </div>
+                    <div class="filter-container">
+                        <button class="filter-btn active" data-filter="all">All</button>
+                        <button class="filter-btn" data-filter="forums">Forums</button>
+                        <button class="filter-btn" data-filter="youtube">YouTube</button>
+                        <button class="filter-btn" data-filter="stores">Stores</button>
+                        <button class="filter-btn" data-filter="manufacturers">Manufacturers</button>
+                        <button class="filter-btn" data-filter="info">Information</button>
+                    </div>
+                </section>
 
-        <section class="csv-upload-section">
-            <h2>Upload Resources from CSV</h2>
-            <p>Add new resources by uploading a CSV file.</p>
-            <div class="csv-upload-container">
-                <input type="file" id="csvFileInput" accept=".csv" class="file-input">
-                <label for="csvFileInput" class="file-label">Choose CSV File</label>
-                <button id="uploadCsvButton" class="upload-btn">Upload Resources</button>
-            </div>
-            <div id="fileDetails" class="file-details">
-                <div class="no-file-selected">No file selected</div>
-            </div>
-            <div id="uploadProgress" class="upload-progress-container" style="display: none;">
-                <div class="upload-progress-label">Processing CSV data...</div>
-                <div class="upload-progress-bar-container">
-                    <div id="progressBar" class="upload-progress-bar"></div>
-                </div>
-                <div id="progressStatus" class="upload-progress-status">0%</div>
-            </div>
-            <div id="csvPreview" class="csv-preview"></div>
-        </section>
+                <section class="csv-upload-section">
+                    <h2>Upload Resources from CSV</h2>
+                    <p>Add new resources by uploading a CSV file.</p>
+                    <div class="csv-upload-container">
+                        <input type="file" id="csvFileInput" accept=".csv" class="file-input">
+                        <label for="csvFileInput" class="file-label">Choose CSV File</label>
+                        <button id="uploadCsvButton" class="upload-btn">Upload Resources</button>
+                    </div>
+                    <div id="fileDetails" class="file-details">
+                        <div class="no-file-selected">No file selected</div>
+                    </div>
+                    <div id="uploadProgress" class="upload-progress-container" style="display: none;">
+                        <div class="upload-progress-label">Processing CSV data...</div>
+                        <div class="upload-progress-bar-container">
+                            <div id="progressBar" class="upload-progress-bar"></div>
+                        </div>
+                        <div id="progressStatus" class="upload-progress-status">0%</div>
+                    </div>
+                    <div id="csvPreview" class="csv-preview"></div>
+                </section>
 
-        <section class="resources-section">
-            <div class="resources-container" id="resourcesContainer">
-                <!-- Resources will be loaded dynamically -->
-                <div class="loading-message">Loading resources...</div>
+                <section class="resources-section">
+                    <div class="resources-actions">
+                        <button id="clearAllResourcesButton" class="danger-btn">Clear All Resources</button>
+                    </div>
+                    <div class="resources-container" id="resourcesContainer">
+                        <!-- Resources will be loaded dynamically -->
+                        <div class="loading-message">Loading resources...</div>
+                    </div>
+                </section>
             </div>
-        </section>
+            
+            <!-- Internet Search Tab Content -->
+            <div class="tab-content" id="search-tab">
+                <section class="internet-search-section">
+                    <h2>Curated Snuff Tobacco Resources</h2>
+                    <p>Browse our collection of pre-curated snuff tobacco resources</p>
+                    
+                    <div class="search-categories">
+                        <div class="category-selector">
+                            <button class="category-btn active" data-category="all">All Categories</button>
+                            <button class="category-btn" data-category="youtube">YouTube</button>
+                            <button class="category-btn" data-category="forums">Forums</button>
+                            <button class="category-btn" data-category="stores">Stores</button>
+                            <button class="category-btn" data-category="manufacturers">Manufacturers</button>
+                            <button class="category-btn" data-category="info">Information</button>
+                        </div>
+                    </div>
+                    
+                    <div class="resource-sets">
+                        <div class="resource-set-selector">
+                            <button class="resource-set-btn active" data-set="popular">Popular Resources</button>
+                            <button class="resource-set-btn" data-set="international">International</button>
+                            <button class="resource-set-btn" data-set="reviews">Reviews & Blogs</button>
+                            <button class="resource-set-btn" data-set="communities">Communities</button>
+                        </div>
+                    </div>
+                    
+                    <div class="community-contribution">
+                        <h3>Know a great resource?</h3>
+                        <p>Help the community by adding resources you know about:</p>
+                        <div class="manual-resource-form">
+                            <div class="form-group">
+                                <label for="resourceTitle">Title:</label>
+                                <input type="text" id="resourceTitle" placeholder="Resource name">
+                            </div>
+                            <div class="form-group">
+                                <label for="resourceUrl">URL:</label>
+                                <input type="text" id="resourceUrl" placeholder="https://...">
+                            </div>
+                            <div class="form-group">
+                                <label for="resourceCategory">Category:</label>
+                                <select id="resourceCategory">
+                                    <option value="youtube">YouTube</option>
+                                    <option value="forums">Forums</option>
+                                    <option value="stores">Stores</option>
+                                    <option value="manufacturers">Manufacturers</option>
+                                    <option value="info">Information</option>
+                                </select>
+                            </div>
+                            <div class="form-group">
+                                <label for="resourceDescription">Description:</label>
+                                <textarea id="resourceDescription" placeholder="Brief description of the resource"></textarea>
+                            </div>
+                            <button id="addResourceButton" class="add-resource-btn">Add Resource</button>
+                        </div>
+                    </div>
+                    
+                    <div id="searchResults" class="search-results">
+                        <!-- Search results will appear here -->
+                        <div class="search-prompt">Enter a search term above to find snuff tobacco resources</div>
+                    </div>
+                    
+                    <div class="search-actions" style="display: none;">
+                        <button id="saveAllResultsButton" class="save-results-btn">Save All Results</button>
+                        <button id="exportResultsButton" class="export-results-btn">Export as CSV</button>
+                    </div>
+                </section>
+            </div>
     </main>
 
     <footer>

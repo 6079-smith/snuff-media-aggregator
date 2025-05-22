@@ -12,6 +12,26 @@ document.addEventListener('DOMContentLoaded', function() {
     const progressBarElement = document.getElementById('progressBar');
     const progressStatusElement = document.getElementById('progressStatus');
     
+    // Tab Navigation Elements
+    const tabButtons = document.querySelectorAll('.tab-btn');
+    const tabContents = document.querySelectorAll('.tab-content');
+    
+    // Internet Search Elements
+    const internetSearchInput = document.getElementById('internetSearchInput');
+    const internetSearchButton = document.getElementById('internetSearchButton');
+    const categoryButtons = document.querySelectorAll('.category-btn');
+    const searchResultsContainer = document.getElementById('searchResults');
+    const saveAllResultsButton = document.getElementById('saveAllResultsButton');
+    const exportResultsButton = document.getElementById('exportResultsButton');
+    const searchActions = document.querySelector('.search-actions');
+    
+    // Manual Resource Form Elements
+    const resourceTitleInput = document.getElementById('resourceTitle');
+    const resourceUrlInput = document.getElementById('resourceUrl');
+    const resourceCategorySelect = document.getElementById('resourceCategory');
+    const resourceDescriptionInput = document.getElementById('resourceDescription');
+    const addResourceButton = document.getElementById('addResourceButton');
+    
     // API endpoints
     const API_URL = '/api';
     const ENDPOINTS = {
@@ -22,6 +42,31 @@ document.addEventListener('DOMContentLoaded', function() {
     
     // Load resources from API
     loadResources();
+    
+    // Clear All Resources functionality
+    const clearAllResourcesButton = document.getElementById('clearAllResourcesButton');
+    clearAllResourcesButton.addEventListener('click', function() {
+        if (confirm('Are you sure you want to delete all resources? This action cannot be undone.')) {
+            // Clear localStorage
+            localStorage.removeItem('snuffResources');
+            
+            // Clear the resources container
+            resourcesContainer.innerHTML = '<div class="loading-message">No resources found. Upload some using CSV!</div>';
+            
+            // Show confirmation message
+            const confirmationMessage = document.createElement('div');
+            confirmationMessage.className = 'success-message';
+            confirmationMessage.textContent = 'All resources have been cleared!';
+            resourcesContainer.prepend(confirmationMessage);
+            
+            // Remove confirmation message after 3 seconds
+            setTimeout(() => {
+                if (confirmationMessage.parentNode === resourcesContainer) {
+                    resourcesContainer.removeChild(confirmationMessage);
+                }
+            }, 3000);
+        }
+    });
     
     // CSV Upload and Parsing
     let parsedCsvData = [];
@@ -695,6 +740,26 @@ document.addEventListener('DOMContentLoaded', function() {
         }
     });
     
+    // Clear resources search functionality
+    const clearResourcesButton = document.getElementById('clearResourcesButton');
+    clearResourcesButton.addEventListener('click', function() {
+        // Clear the search input
+        searchInput.value = '';
+        
+        // Reset filter buttons
+        filterButtons.forEach(btn => btn.classList.remove('active'));
+        document.querySelector('.filter-btn[data-filter="all"]').classList.add('active');
+        
+        // Show all resources
+        const resourceCards = document.querySelectorAll('.resource-card');
+        resourceCards.forEach(card => {
+            card.style.display = 'flex';
+        });
+        
+        // Focus on the search input
+        searchInput.focus();
+    });
+    
     // Filter functionality
     filterButtons.forEach(button => {
         button.addEventListener('click', function() {
@@ -748,4 +813,433 @@ document.addEventListener('DOMContentLoaded', function() {
     
     // Run on scroll
     window.addEventListener('scroll', fadeInCards);
+    
+    // Tab Navigation
+    tabButtons.forEach(button => {
+        button.addEventListener('click', () => {
+            // Remove active class from all buttons and contents
+            tabButtons.forEach(btn => btn.classList.remove('active'));
+            tabContents.forEach(content => content.classList.remove('active'));
+            
+            // Add active class to clicked button and corresponding content
+            button.classList.add('active');
+            const tabId = button.getAttribute('data-tab');
+            document.getElementById(tabId).classList.add('active');
+        });
+    });
+    
+    // Curated Resource Sets Functionality
+    let searchResultsData = [];
+    
+    // Pre-defined resource sets
+    const resourceSets = {
+        popular: [
+            {
+                title: "Mr Snuff",
+                description: "One of the world's largest online snuff stores with a huge range of varieties from across the globe.",
+                url: "https://www.mrsnuff.com/",
+                category: "stores"
+            },
+            {
+                title: "Toque Snuff",
+                description: "Premium UK-made snuff tobacco in a wide variety of flavors and strengths.",
+                url: "https://www.toquesnuff.com/",
+                category: "stores"
+            },
+            {
+                title: "Reddit - r/nasalsnuff",
+                description: "Reddit community dedicated to nasal snuff and snuff-related discussions.",
+                url: "https://www.reddit.com/r/nasalsnuff/",
+                category: "forums"
+            },
+            {
+                title: "Snuff House Forum",
+                description: "Active forum for snuff enthusiasts with reviews, discussions, and trading.",
+                url: "https://snuffhouse.com/",
+                category: "forums"
+            },
+            {
+                title: "Simply Snuff!",
+                description: "Regular snuff reviews posted on Wednesdays and Sundays with an active community.",
+                url: "https://www.youtube.com/channel/UCkDy-VX2CUkARohIR8nWp-g",
+                category: "youtube"
+            },
+            {
+                title: "McChrystal's Snuff",
+                description: "Original sniffing tobacco established in 1926 offering various snuff products.",
+                url: "https://mcchrystals.co.uk/",
+                category: "manufacturers"
+            },
+            {
+                title: "Snuff.Me.UK",
+                description: "Comprehensive information site about snuff tobacco, its history, and how to use it.",
+                url: "https://snuff.me.uk/",
+                category: "info"
+            }
+        ],
+        international: [
+            {
+                title: "Bernard Schnupftabak",
+                description: "German manufacturer of traditional Bavarian-style snuff tobacco since 1733.",
+                url: "https://bernard.de/",
+                category: "manufacturers"
+            },
+            {
+                title: "Pöschl Tabak",
+                description: "German tobacco company known for their Ozona and Gawith Apricot snuffs.",
+                url: "https://www.poeschl-tobacco.com/",
+                category: "manufacturers"
+            },
+            {
+                title: "Rosinski Schnupftabak",
+                description: "Artisanal German snuff maker producing small-batch, high-quality snuffs.",
+                url: "https://www.rosinski-schnupf.de/",
+                category: "manufacturers"
+            },
+            {
+                title: "Mullins & Westley Ltd",
+                description: "UK-based store specializing in traditional English snuffs.",
+                url: "https://www.mullinsandwestley.co.uk/",
+                category: "stores"
+            },
+            {
+                title: "Snuffstore.co.uk",
+                description: "UK online store with a wide selection of British and international snuffs.",
+                url: "https://www.snuffstore.co.uk/",
+                category: "stores"
+            },
+            {
+                title: "Snuff.eu",
+                description: "European snuff store shipping worldwide with extensive selection.",
+                url: "https://snuff.eu/",
+                category: "stores"
+            }
+        ],
+        reviews: [
+            {
+                title: "Snuff Reviews",
+                description: "Dedicated blog with hundreds of detailed snuff tobacco reviews.",
+                url: "https://snuffreviews.com/",
+                category: "info"
+            },
+            {
+                title: "Snuff Taker's Ephemeris",
+                description: "Online magazine dedicated to snuff tobacco culture, history, and reviews.",
+                url: "https://snuffhouse.com/discussion/",
+                category: "info"
+            },
+            {
+                title: "Snuff Notes Blog",
+                description: "Personal blog with tasting notes and reviews of various snuff tobaccos.",
+                url: "https://snuffnotes.blogspot.com/",
+                category: "info"
+            },
+            {
+                title: "SnuffSense YouTube Channel",
+                description: "Video reviews of snuff tobacco varieties with detailed sensory descriptions.",
+                url: "https://www.youtube.com/user/SnuffSense",
+                category: "youtube"
+            },
+            {
+                title: "Snuff Reviews Podcast",
+                description: "Audio podcast featuring reviews and discussions about snuff tobacco.",
+                url: "https://snuffcast.podbean.com/",
+                category: "info"
+            }
+        ],
+        communities: [
+            {
+                title: "Snuff House Forum",
+                description: "The largest online community dedicated to snuff tobacco enthusiasts.",
+                url: "https://snuffhouse.com/",
+                category: "forums"
+            },
+            {
+                title: "Reddit - r/nasalsnuff",
+                description: "Reddit community dedicated to nasal snuff and snuff-related discussions.",
+                url: "https://www.reddit.com/r/nasalsnuff/",
+                category: "forums"
+            },
+            {
+                title: "Snuff Takers' Discord",
+                description: "Discord server for real-time chat about snuff tobacco.",
+                url: "https://discord.gg/snufftobacco",
+                category: "forums"
+            },
+            {
+                title: "Facebook - Snuff Takers Group",
+                description: "Facebook group for snuff enthusiasts to share experiences and recommendations.",
+                url: "https://www.facebook.com/groups/snufftakers/",
+                category: "forums"
+            },
+            {
+                title: "Snuff Tobacco Meetups",
+                description: "Information about in-person meetups and events for snuff tobacco enthusiasts.",
+                url: "https://snuffmeetups.com/",
+                category: "forums"
+            }
+        ]
+    };
+    
+    // Resource Set Selection
+    const resourceSetButtons = document.querySelectorAll('.resource-set-btn');
+    resourceSetButtons.forEach(button => {
+        button.addEventListener('click', function() {
+            // Update active button
+            resourceSetButtons.forEach(btn => btn.classList.remove('active'));
+            this.classList.add('active');
+            
+            // Get the selected resource set
+            const setName = this.getAttribute('data-set');
+            
+            // Get active category
+            const activeCategory = document.querySelector('.category-btn.active').getAttribute('data-category');
+            
+            // Display resources from the selected set
+            displayResourceSet(setName, activeCategory);
+        });
+    });
+    
+    // Display initial resource set (popular)
+    setTimeout(() => {
+        displayResourceSet('popular', 'all');
+    }, 500);
+    
+    function displayResourceSet(setName, category) {
+        // Get resources from the selected set
+        const resources = resourceSets[setName] || [];
+        
+        // Filter by category if needed
+        const filteredResources = category === 'all' 
+            ? resources 
+            : resources.filter(resource => resource.category === category);
+        
+        // Store the results for later use
+        searchResultsData = filteredResources;
+        
+        // Display the resources
+        displaySearchResults(filteredResources);
+        
+        // Show action buttons if we have results
+        if (filteredResources.length > 0) {
+            searchActions.style.display = 'flex';
+        } else {
+            searchActions.style.display = 'none';
+        }
+    }
+    
+    function displaySearchResults(results) {
+        if (results.length === 0) {
+            searchResultsContainer.innerHTML = '<div class="search-prompt">No results found. Try different search terms or options.</div>';
+            return;
+        }
+        
+        let html = '';
+        
+        results.forEach((result, index) => {
+            html += `
+                <div class="search-result-item">
+                    <input type="checkbox" class="search-result-checkbox" data-index="${index}" checked>
+                    <div class="search-result-content">
+                        <div class="search-result-title">${result.title}</div>
+                        <div class="search-result-description">${result.description}</div>
+                        <div class="search-result-url">${result.url}</div>
+                        <div class="search-result-category">${getCategoryLabel(result.category)}</div>
+                    </div>
+                </div>
+            `;
+        });
+        
+        searchResultsContainer.innerHTML = html;
+    }
+    
+    function getCategoryLabel(category) {
+        const labels = {
+            'forums': 'Forums',
+            'youtube': 'YouTube',
+            'stores': 'Stores',
+            'manufacturers': 'Manufacturers',
+            'info': 'Information'
+        };
+        
+        return labels[category] || 'Other';
+    }
+    
+    // Category filter for internet search
+    categoryButtons.forEach(button => {
+        button.addEventListener('click', function() {
+            // Update active button
+            categoryButtons.forEach(btn => btn.classList.remove('active'));
+            this.classList.add('active');
+        });
+    });
+    
+    // Save all search results to resources
+    saveAllResultsButton.addEventListener('click', function() {
+        const checkedResults = getCheckedSearchResults();
+        
+        if (checkedResults.length === 0) {
+            alert('Please select at least one result to save');
+            return;
+        }
+        
+        // Show progress indicator
+        searchResultsContainer.innerHTML = '<div class="search-loading">Saving selected resources...</div>';
+        
+        // Process each result with a delay to show progress
+        processSearchResultsWithProgress(checkedResults);
+    });
+    
+    function getCheckedSearchResults() {
+        const checkboxes = document.querySelectorAll('.search-result-checkbox:checked');
+        const checkedResults = [];
+        
+        checkboxes.forEach(checkbox => {
+            const index = parseInt(checkbox.getAttribute('data-index'));
+            if (!isNaN(index) && searchResultsData[index]) {
+                checkedResults.push(searchResultsData[index]);
+            }
+        });
+        
+        return checkedResults;
+    }
+    
+    function processSearchResultsWithProgress(results) {
+        let processed = 0;
+        const total = results.length;
+        
+        function processNextResult(index) {
+            if (index >= total) {
+                // All items processed
+                searchResultsContainer.innerHTML = `<div class="search-prompt success">Successfully saved ${total} resources!</div>`;
+                searchActions.style.display = 'none';
+                
+                // Reload resources to show the newly added ones
+                loadResources();
+                
+                // Switch to resources tab after a delay
+                setTimeout(() => {
+                    document.querySelector('.tab-btn[data-tab="resources-tab"]').click();
+                }, 2000);
+                
+                return;
+            }
+            
+            // Update progress display
+            const percent = Math.round((index / total) * 100);
+            searchResultsContainer.innerHTML = `
+                <div class="search-loading">
+                    Saving resource ${index + 1} of ${total}...
+                    <div class="upload-progress-bar-container">
+                        <div class="upload-progress-bar" style="width: ${percent}%"></div>
+                    </div>
+                    <div class="upload-progress-status">${percent}%</div>
+                </div>
+            `;
+            
+            // Save the current result
+            const item = results[index];
+            saveResource({
+                title: item.title,
+                description: item.description,
+                url: item.url,
+                category: item.category
+            });
+            
+            // Process next item after a delay
+            setTimeout(() => {
+                processNextResult(index + 1);
+            }, 500);
+        }
+        
+        // Start processing
+        processNextResult(0);
+    }
+    
+    // Export search results as CSV
+    exportResultsButton.addEventListener('click', function() {
+        const checkedResults = getCheckedSearchResults();
+        
+        if (checkedResults.length === 0) {
+            alert('Please select at least one result to export');
+            return;
+        }
+        
+        // Convert results to CSV
+        const csv = convertToCSV(checkedResults);
+        
+        // Create download link
+        const blob = new Blob([csv], { type: 'text/csv;charset=utf-8;' });
+        const url = URL.createObjectURL(blob);
+        const link = document.createElement('a');
+        link.setAttribute('href', url);
+        link.setAttribute('download', 'snuff_resources.csv');
+        link.style.visibility = 'hidden';
+        document.body.appendChild(link);
+        link.click();
+        document.body.removeChild(link);
+    });
+    
+    function convertToCSV(results) {
+        const header = 'Title,Description,URL,Category\n';
+        const rows = results.map(item => {
+            // Properly escape fields for CSV
+            const title = item.title.replace(/"/g, '""');
+            const description = item.description.replace(/"/g, '""');
+            const url = item.url.replace(/"/g, '""');
+            const category = item.category;
+            
+            return `"${title}","${description}","${url}","${category}"`;
+        });
+        
+        return header + rows.join('\n');
+    }
+    
+    // Manual resource addition
+    addResourceButton.addEventListener('click', function() {
+        const title = resourceTitleInput.value.trim();
+        const url = resourceUrlInput.value.trim();
+        const category = resourceCategorySelect.value;
+        const description = resourceDescriptionInput.value.trim();
+        
+        if (!title || !url) {
+            alert('Please enter at least a title and URL');
+            return;
+        }
+        
+        // Create and save the resource
+        const resource = {
+            title: title,
+            description: description || `User-contributed ${category} resource`,
+            url: url,
+            category: category
+        };
+        
+        saveResource(resource);
+        
+        // Show success message
+        const formContainer = document.querySelector('.manual-resource-form');
+        const successMessage = document.createElement('div');
+        successMessage.className = 'success-message';
+        successMessage.textContent = 'Resource added successfully!';
+        formContainer.appendChild(successMessage);
+        
+        // Clear form
+        resourceTitleInput.value = '';
+        resourceUrlInput.value = '';
+        resourceDescriptionInput.value = '';
+        
+        // Remove success message after 3 seconds
+        setTimeout(() => {
+            formContainer.removeChild(successMessage);
+        }, 3000);
+        
+        // Reload resources to show the newly added one
+        loadResources();
+        
+        // Switch to resources tab after a delay
+        setTimeout(() => {
+            document.querySelector('.tab-btn[data-tab="resources-tab"]').click();
+        }, 2000);
+    });
 });

@@ -1,0 +1,72 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Snuff Tobacco Resources</title>
+    <link rel="stylesheet" href="styles.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
+</head>
+<body>
+    <header>
+        <div class="container">
+            <h1><i class="fas fa-leaf"></i> Snuff Tobacco Resources</h1>
+            <p>A curated collection of the best snuff tobacco websites, forums, and media</p>
+        </div>
+    </header>
+
+    <main class="container">
+        <section class="search-section">
+            <div class="search-container">
+                <input type="text" id="searchInput" placeholder="Search resources...">
+                <button id="searchButton"><i class="fas fa-search"></i></button>
+            </div>
+            <div class="filter-container">
+                <button class="filter-btn active" data-filter="all">All</button>
+                <button class="filter-btn" data-filter="forums">Forums</button>
+                <button class="filter-btn" data-filter="youtube">YouTube</button>
+                <button class="filter-btn" data-filter="stores">Stores</button>
+                <button class="filter-btn" data-filter="manufacturers">Manufacturers</button>
+                <button class="filter-btn" data-filter="info">Information</button>
+            </div>
+        </section>
+
+        <section class="csv-upload-section">
+            <h2>Upload Resources from CSV</h2>
+            <p>Add new resources by uploading a CSV file.</p>
+            <div class="csv-upload-container">
+                <input type="file" id="csvFileInput" accept=".csv" class="file-input">
+                <label for="csvFileInput" class="file-label">Choose CSV File</label>
+                <button id="uploadCsvButton" class="upload-btn">Upload Resources</button>
+            </div>
+            <div id="fileDetails" class="file-details">
+                <div class="no-file-selected">No file selected</div>
+            </div>
+            <div id="uploadProgress" class="upload-progress-container" style="display: none;">
+                <div class="upload-progress-label">Processing CSV data...</div>
+                <div class="upload-progress-bar-container">
+                    <div id="progressBar" class="upload-progress-bar"></div>
+                </div>
+                <div id="progressStatus" class="upload-progress-status">0%</div>
+            </div>
+            <div id="csvPreview" class="csv-preview"></div>
+        </section>
+
+        <section class="resources-section">
+            <div class="resources-container" id="resourcesContainer">
+                <!-- Resources will be loaded dynamically -->
+                <div class="loading-message">Loading resources...</div>
+            </div>
+        </section>
+    </main>
+
+    <footer>
+        <div class="container">
+            <p>&copy; 2025 Snuff Tobacco Resources | Created for informational purposes</p>
+            <p class="disclaimer">This website is intended for adults of legal age for tobacco consumption in their jurisdiction.</p>
+        </div>
+    </footer>
+
+    <script src="script.js"></script>
+</body>
+</html>
